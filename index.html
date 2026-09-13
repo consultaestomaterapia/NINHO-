@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ninho — Rotinas de Casa</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F5233">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --bg: #F2F4EC;
+    --bg-deep: #E9ECE0;
+    --card: #FFFFFF;
+    --ink: #262C21;
+    --ink-soft: #6B7263;
+    --line: #DFE3D4;
+    --forest: #2F5233;
+    --forest-deep: #223d27;
+    --gold: #D9A441;
+    --coral: #E2694F;
+    --sky: #5B7C99;
+    --plum: #8C5C7A;
+    --teal: #3E8E7E;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg);
+    padding-bottom:100px;
+    position:relative;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding:28px 20px 18px;
+    background:linear-gradient(180deg, var(--bg-deep), var(--bg) 85%);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:4px;
+  }
+  .brand-left{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:34px;height:34px;
+    border-radius:10px;
+    background:var(--forest);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:19px;height:19px;}
+  .brand-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.05rem;
+    letter-spacing:.01em;
+  }
+  .icon-btn{
+    width:36px;height:36px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:var(--ink);
+    flex-shrink:0;
+  }
+  .icon-btn svg{width:17px;height:17px;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:1.9rem;
+    line-height:1.15;
+    margin:14px 0 4px;
+  }
+  .subtitle{
+    color:var(--ink-soft);
+    font-size:.92rem;
+    margin:0;
+  }
+
+  /* ---------- DAY STRIP ---------- */
+  .day-strip{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:18px 20px 4px;
+    scrollbar-width:none;
+  }
+  .day-strip::-webkit-scrollbar{display:none;}
+  .day-chip{
+    flex:0 0 auto;
+    width:56px;
+    padding:10px 0 9px;
+    border-radius:14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    text-align:center;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .day-chip .dow{
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .day-chip .num{
+    font-family:'Fraunces', serif;
+    font-size:1.3rem;
+    font-weight:600;
+    margin-top:2px;
+  }
+  .day-chip.today .num::after{
+    content:'';
+    display:block;
+    width:5px;height:5px;
+    border-radius:50%;
+    background:var(--coral);
+    margin:3px auto 0;
+  }
+  .day-chip.selected{
+    background:var(--forest);
+    border-color:var(--forest);
+    transform:translateY(-2px);
+  }
+  .day-chip.selected .dow{color:#CFE0CF;}
+  .day-chip.selected .num{color:#fff;}
+  .day-chip.selected .num::after{background:var(--gold);}
+
+  /* ---------- FAMILY FILTER ---------- */
+  .family-row{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:14px 20px 6px;
+    scrollbar-width:none;
+  }
+  .family-row::-webkit-scrollbar{display:none;}
+  .pill{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 14px 7px 8px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-size:.85rem;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .pill .dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;}
+  .pill.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:#fff;
+  }
+  .pill.add-pill{
+    color:var(--forest);
+    border-style:dashed;
+    border-color:var(--forest);
+    background:transparent;
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-label{
+    padding:20px 20px 8px;
+    font-size:.78rem;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+
+  /* ---------- TASK LIST ---------- */
+  .task-list{
+    padding:0 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .task-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .task-card::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:5px;
+    background:var(--tag-color, var(--forest));
+  }
+  .task-card.done{ opacity:.55; }
+  .check{
+    width:24px;height:24px;
+    border-radius:8px;
+    border:2px solid var(--line);
+    flex-shrink:0;
+    margin-top:2px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s, border-color .15s;
+  }
+  .check.checked{
+    background:var(--forest);
+    border-color:var(--forest);
+  }
+  .check svg{width:14px;height:14px;opacity:0;transition:opacity .1s;}
+  .check.checked svg{opacity:1;}
+  .task-body{flex:1; min-width:0;}
+  .task-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:4px;
+    flex-wrap:wrap;
+  }
+  .assignee-tag{
+    font-size:.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    padding:2px 8px;
+    border-radius:999px;
+    color:#fff;
+  }
+  .cat-icon{
+    width:16px;height:16px;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .repeat-badge{
+    width:16px;height:16px;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .task-title{
+    font-size:.98rem;
+    font-weight:600;
+    margin:0;
+    line-height:1.3;
+  }
+  .task-card.done .task-title{ text-decoration:line-through; }
+  .task-meta{
+    font-size:.78rem;
+    color:var(--ink-soft);
+    margin-top:3px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  .card-actions{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .del-btn, .bell-btn{
+    background:none;border:none;color:var(--ink-soft);
+    cursor:pointer;padding:4px;flex-shrink:0;
+    opacity:.5;
+  }
+  .del-btn:hover{opacity:1; color:var(--coral);}
+  .bell-btn.active{ opacity:1; color:var(--gold); }
+  .del-btn svg, .bell-btn svg{width:16px;height:16px;}
+
+  .empty-state{
+    padding:40px 24px;
+    text-align:center;
+    color:var(--ink-soft);
+  }
+  .empty-state svg{width:40px;height:40px;margin-bottom:10px;opacity:.5;}
+  .empty-state p{font-size:.9rem; margin:0;}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed;
+    bottom:26px;
+    left:50%;
+    transform:translateX(calc(-50% + 172px));
+    width:56px;height:56px;
+    border-radius:18px;
+    background:var(--forest);
+    border:none;
+    box-shadow:0 8px 20px rgba(47,82,51,.35);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:#fff;
+    z-index:20;
+  }
+  .fab svg{width:24px;height:24px;}
+  @media (max-width:480px){
+    .fab{ left:auto; right:20px; transform:none; }
+  }
+
+  /* ---------- SHEET / MODAL ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(38,44,33,.45);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .sheet{
+    background:var(--bg);
+    width:100%;
+    max-width:480px;
+    border-radius:22px 22px 0 0;
+    padding:22px 20px 28px;
+    max-height:88vh;
+    overflow-y:auto;
+    animation:slideup .22s ease;
+  }
+  @keyframes slideup{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .sheet-handle{
+    width:36px;height:4px;background:var(--line);border-radius:99px;
+    margin:0 auto 16px;
+  }
+  .sheet h2{
+    font-family:'Fraunces', serif;
+    font-size:1.35rem;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .sheet .hint{
+    font-size:.82rem;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  label{
+    display:block;
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin:14px 0 6px;
+  }
+  input[type=text], input[type=date], input[type=time], select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:var(--radius-sm);
+    border:1px solid var(--line);
+    background:var(--card);
+    font-family:inherit;
+    font-size:.95rem;
+    color:var(--ink);
+  }
+  input:focus, select:focus{outline:2px solid var(--forest); outline-offset:1px;}
+  .chip-select{
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .chip-opt{
+    padding:9px 14px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-size:.85rem;
+    font-weight:600;
+    cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+  }
+  .chip-opt.selected{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .chip-opt .dot{width:14px;height:14px;border-radius:50%;}
+  .color-row{ display:flex; gap:10px; margin-top:6px; }
+  .color-dot{
+    width:32px;height:32px;border-radius:50%;
+    cursor:pointer;
+    border:3px solid transparent;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .color-dot.selected{ border-color:var(--ink); }
+  .color-dot svg{width:14px;height:14px;color:#fff;opacity:0;}
+  .color-dot.selected svg{opacity:1;}
+
+  .toggle-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    margin-top:14px;
+  }
+  .toggle-row .label-block{ flex:1; padding-right:10px; }
+  .toggle-row .t-title{ font-size:.9rem; font-weight:600; }
+  .toggle-row .t-sub{ font-size:.75rem; color:var(--ink-soft); margin-top:2px; }
+  .switch{
+    width:42px; height:24px;
+    border-radius:999px;
+    background:var(--line);
+    position:relative;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .15s;
+  }
+  .switch.on{ background:var(--forest); }
+  .switch::after{
+    content:'';
+    position:absolute;
+    top:3px; left:3px;
+    width:18px; height:18px;
+    border-radius:50%;
+    background:#fff;
+    transition:transform .15s;
+  }
+  .switch.on::after{ transform:translateX(18px); }
+
+  .primary-btn{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+    border:none;
+    border-radius:var(--radius-sm);
+    background:var(--forest);
+    color:#fff;
+    font-family:inherit;
+    font-weight:700;
+    font-size:.95rem;
+    cursor:pointer;
+  }
+  .primary-btn:disabled{ background:var(--line); color:var(--ink-soft); cursor:not-allowed; }
+  .secondary-btn{
+    width:100%;
+    margin-top:10px;
+    padding:13px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--card);
+    color:var(--ink);
+    font-family:inherit;
+    font-weight:700;
+    font-size:.9rem;
+    cursor:pointer;
+  }
+  .text-btn{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border:none;
+    background:none;
+    color:var(--ink-soft);
+    font-family:inherit;
+    font-weight:600;
+    font-size:.88rem;
+    cursor:pointer;
+  }
+  .members-manage-list{
+    display:flex; flex-direction:column; gap:8px; margin-top:6px;
+  }
+  .member-row{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+  }
+  .member-row .dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;}
+  .member-row span{flex:1; font-weight:600; font-size:.9rem;}
+  .member-row button{
+    background:none;border:none;color:var(--ink-soft);cursor:pointer;
+  }
+  .member-row button svg{width:16px;height:16px;}
+
+  .code-box{
+    display:flex; align-items:center; gap:8px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    margin-top:6px;
+  }
+  .code-box code{
+    flex:1;
+    font-family:'Work Sans', monospace;
+    font-size:.85rem;
+    color:var(--ink);
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+  .copy-btn{
+    background:var(--forest);
+    color:#fff;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:.78rem;
+    font-weight:700;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .divider{
+    display:flex; align-items:center; gap:10px;
+    margin:20px 0 4px;
+    color:var(--ink-soft);
+    font-size:.75rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .divider::before, .divider::after{
+    content:''; flex:1; height:1px; background:var(--line);
+  }
+
+  .toast{
+    position:fixed;
+    bottom:96px; left:50%; transform:translateX(-50%);
+    background:var(--ink);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:.82rem;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s, transform .2s;
+    z-index:60;
+    white-space:nowrap;
+    max-width:90%;
+    text-overflow:ellipsis;
+    overflow:hidden;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="brand-left">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        </div>
+        <div class="brand-name">Ninho</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="icon-btn" id="openImportBtn" aria-label="Importar aviso da escola">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><path d="M21 5H3v14h18z"/><path d="M3 6l9 7 9-7"/></svg>
+        </div>
+        <div class="icon-btn" id="googleCalBtn" aria-label="Ligar ao Google Calendar" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span id="gcalDot" style="display:none; position:absolute; top:5px; right:5px; width:8px; height:8px; border-radius:50%; background:var(--teal);"></span>
+        </div>
+        <div class="icon-btn" id="openFamilyBtn" aria-label="Gerir família">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+      </div>
+    </div>
+    <h1 id="greeting">Olá, família</h1>
+    <p class="subtitle" id="dateLine"></p>
+  </header>
+
+  <div class="day-strip" id="dayStrip"></div>
+
+  <div class="family-row" id="familyRow"></div>
+
+  <div class="section-label" id="listLabel">MURAL DE ROTINAS</div>
+  <div class="task-list" id="taskList"></div>
+
+  <button class="fab" id="openAddTask" aria-label="Adicionar rotina">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</div>
+
+<!-- ADD TASK SHEET -->
+<div class="overlay" id="taskOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Nova rotina</h2>
+    <p class="hint">&nbsp;</p>
+
+    <label>O que é preciso fazer?</label>
+    <input type="text" id="taskTitle" placeholder="Ex: Levar mochila da ginástica">
+
+    <label>Para quem</label>
+    <div class="chip-select" id="assigneeSelect"></div>
+
+    <label>Categoria</label>
+    <div class="chip-select" id="categorySelect"></div>
+
+    <label>Dia</label>
+    <input type="date" id="taskDate">
+
+    <label>Hora (opcional)</label>
+    <input type="time" id="taskTime">
+
+    <div class="toggle-row">
+      <div class="label-block">
+        <div class="t-title">Repetir todas as semanas</div>
+        <div class="t-sub" id="repeatSub">Volta a aparecer neste dia da semana</div>
+      </div>
+      <div class="switch" id="repeatToggle"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="label-block">
+        <div class="t-title">Avisar-me à hora marcada</div>
+        <div class="t-sub">Só funciona com esta página aberta no navegador</div>
+      </div>
+      <div class="switch" id="reminderToggle"></div>
+    </div>
+
+    <button class="primary-btn" id="saveTaskBtn">Adicionar ao mural</button>
+    <button class="text-btn" id="cancelTaskBtn">Cancelar</button>
+  </div>
+</div>
+
+<!-- MANAGE FAMILY SHEET -->
+<div class="overlay" id="familyOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Gerir família</h2>
+    <p class="hint">Os dados ficam guardados neste telemóvel. Para os ter também no telemóvel do outro pai/mãe, gere um código aqui e importe-o lá.</p>
+
+    <label>Código para transferir os dados atuais</label>
+    <div class="code-box">
+      <button class="copy-btn" id="genCodeBtn" style="width:100%;">Gerar e copiar código</button>
+    </div>
+    <p class="hint" style="margin-top:6px;">Envie este código por WhatsApp/mensagem para o outro telemóvel.</p>
+
+    <div class="divider">Recebeu um código?</div>
+    <label>Colar código recebido</label>
+    <input type="text" id="joinCodeInput" placeholder="Cole aqui o código">
+    <button class="secondary-btn" id="joinFamilyBtn">Importar (substitui os dados atuais)</button>
+
+    <div class="divider">Membros</div>
+    <label>Nome</label>
+    <input type="text" id="memberName" placeholder="Nome da pessoa">
+    <label>Cor</label>
+    <div class="color-row" id="colorRow"></div>
+    <button class="primary-btn" id="saveMemberBtn">Adicionar à família</button>
+
+    <label style="margin-top:22px;">Membros atuais</label>
+    <div class="members-manage-list" id="membersManageList"></div>
+
+    <button class="text-btn" id="closeFamilyBtn">Fechar</button>
+  </div>
+</div>
+
+<!-- IMPORT NOTICE SHEET -->
+<div class="overlay" id="importOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Importar aviso</h2>
+    <p class="hint">Cole aqui o texto de um email, circular ou mensagem da escola. O Ninho tenta encontrar a data, a hora e o assunto — confirme tudo antes de guardar.</p>
+
+    <label>Texto do aviso</label>
+    <textarea id="importText" rows="7" placeholder="Cole aqui o texto..." style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--card); font-family:inherit; font-size:.92rem; color:var(--ink); resize:vertical;"></textarea>
+
+    <button class="primary-btn" id="parseImportBtn">Analisar texto</button>
+    <button class="text-btn" id="cancelImportBtn">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+(function(){
+  const PALETTE = ['#2F5233','#E2694F','#5B7C99','#D9A441','#8C5C7A','#3E8E7E'];
+  const CATEGORIES = [
+    {id:'homework', label:'Trabalho de casa', icon:'book'},
+    {id:'test', label:'Teste', icon:'edit'},
+    {id:'chore', label:'Tarefa doméstica', icon:'home'},
+    {id:'errand', label:'Recado / Compra', icon:'bag'},
+    {id:'appointment', label:'Compromisso', icon:'calendar'},
+  ];
+  const ICONS = {
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+    home:'<path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+    bag:'<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+    calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    repeat:'<path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+    bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'
+  };
+
+  let family = { members: [], tasks: [] };
+  let familyCode = null;
+  let selectedDate = todayISO();
+  let activeFilter = 'all';
+  let pendingColor = PALETTE[0];
+  let pendingAssignee = null;
+  let pendingCategory = CATEGORIES[0].id;
+  let pendingRepeat = false;
+  let pendingReminder = false;
+  let scheduledTimers = [];
+
+  // ---------- GOOGLE CALENDAR ----------
+  // Substitua pelo Client ID criado na Google Cloud Console (ver instruções).
+  const GOOGLE_CLIENT_ID = 'COLOQUE_AQUI_O_SEU_CLIENT_ID.apps.googleusercontent.com';
+  let gcalConnected = false;
+  let gcalToken = null;
+  let gcalTokenClient = null;
+
+  function initGoogleAuthIfReady(){
+    if(GOOGLE_CLIENT_ID.indexOf('COLOQUE_AQUI') === 0) return; // não configurado ainda
+    if(!window.google || !google.accounts || !google.accounts.oauth2) return;
+    gcalTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/calendar.events',
+      callback: (resp)=>{
+        if(resp && resp.access_token){
+          gcalToken = resp.access_token;
+          gcalConnected = true;
+          document.getElementById('gcalDot').style.display = 'block';
+          renderTaskList();
+          showToast('Ligado ao Google Calendar');
+        }
+      }
+    });
+  }
+
+  document.getElementById('googleCalBtn').addEventListener('click', ()=>{
+    if(GOOGLE_CLIENT_ID.indexOf('COLOQUE_AQUI') === 0){
+      showToast('Google Calendar ainda não está configurado nesta app');
+      return;
+    }
+    if(!gcalTokenClient){ initGoogleAuthIfReady(); }
+    if(gcalTokenClient){ gcalTokenClient.requestAccessToken({ prompt: gcalConnected ? '' : 'consent' }); }
+  });
+
+  async function addTaskToGoogleCalendar(task, dateISO){
+    if(!gcalConnected || !gcalToken){ showToast('Ligue primeiro ao Google Calendar'); return; }
+    const member = family.members.find(m=>m.id===task.assignee);
+    const startDateTime = dateISO + 'T' + (task.time || '09:00') + ':00';
+    const start = new Date(startDateTime);
+    const end = new Date(start.getTime() + 30*60000);
+    const event = {
+      summary: (member ? '['+member.name+'] ' : '') + task.title,
+      description: 'Criado a partir do mural Ninho.',
+      start: { dateTime: start.toISOString() },
+      end: { dateTime: end.toISOString() },
+      reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 30 }] }
+    };
+    try{
+      const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer '+gcalToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify(event)
+      });
+      if(res.ok){ showToast('Adicionado ao Google Calendar'); }
+      else if(res.status === 401){ gcalConnected = false; gcalToken = null; document.getElementById('gcalDot').style.display='none'; showToast('Sessão do Google expirou, ligue novamente'); }
+      else{ showToast('Não foi possível criar o evento'); }
+    }catch(e){ showToast('Erro de ligação ao Google Calendar'); }
+  }
+
+  window.addEventListener('load', ()=>{
+    // dá tempo ao script do Google carregar
+    setTimeout(initGoogleAuthIfReady, 600);
+  });
+
+  // ---------- IMPORTAR AVISO (heurística, sem IA) ----------
+  const MONTHS_PT = ['janeiro','fevereiro','março','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  function parseNoticeText(text){
+    const result = { title:'', date:'', time:'' };
+    const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+
+    // título: procura "Assunto:" ou usa a primeira linha
+    const subjectLine = lines.find(l=>/^(assunto|tema)\s*:/i.test(l));
+    if(subjectLine){
+      result.title = subjectLine.replace(/^(assunto|tema)\s*:/i,'').trim();
+    }else if(lines.length){
+      result.title = lines[0].slice(0,80);
+    }
+
+    // hora: HH:MM ou HHhMM ou "às 15h"
+    let m = text.match(/(\d{1,2})[:h](\d{2})/);
+    if(m){ result.time = String(m[1]).padStart(2,'0')+':'+m[2]; }
+    else{
+      m = text.match(/às?\s*(\d{1,2})\s*h(?!\w)/i);
+      if(m){ result.time = String(m[1]).padStart(2,'0')+':00'; }
+    }
+
+    // data: dd/mm/yyyy ou dd-mm-yyyy
+    m = text.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if(m){
+      let [_, d, mo, y] = m;
+      if(y.length===2) y = '20'+y;
+      result.date = y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    }else{
+      // "12 de março" / "12 março"
+      m = text.match(/(\d{1,2})\s*(?:de\s*)?(janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/i);
+      if(m){
+        const day = parseInt(m[1],10);
+        const monIdx = MONTHS_PT.indexOf(m[2].toLowerCase().replace('março','março'));
+        const now = new Date();
+        let year = now.getFullYear();
+        const monthNum = monIdx === 3 ? 2 : monIdx; // ajusta 'marco' duplicado
+        const candidate = new Date(year, monIdx>=0?monIdx:0, day);
+        if(candidate < now) year += 1;
+        result.date = year+'-'+String((monIdx>=0?monIdx:0)+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+      }else if(/amanh[ãa]/i.test(text)){
+        const d = new Date(); d.setDate(d.getDate()+1);
+        result.date = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      }else if(/\bhoje\b/i.test(text)){
+        result.date = todayISO();
+      }
+    }
+    if(!result.date) result.date = selectedDate;
+    return result;
+  }
+
+  document.getElementById('openImportBtn').addEventListener('click', ()=>{
+    document.getElementById('importText').value = '';
+    document.getElementById('importOverlay').classList.add('open');
+  });
+  document.getElementById('cancelImportBtn').addEventListener('click', ()=>{
+    document.getElementById('importOverlay').classList.remove('open');
+  });
+  document.getElementById('importOverlay').addEventListener('click', (e)=>{ if(e.target.id==='importOverlay') document.getElementById('importOverlay').classList.remove('open'); });
+
+  document.getElementById('parseImportBtn').addEventListener('click', ()=>{
+    const text = document.getElementById('importText').value.trim();
+    if(!text){ showToast('Cole algum texto primeiro'); return; }
+    const parsed = parseNoticeText(text);
+    document.getElementById('importOverlay').classList.remove('open');
+    openTaskSheet();
+    document.getElementById('taskTitle').value = parsed.title;
+    document.getElementById('taskDate').value = parsed.date;
+    document.getElementById('taskTime').value = parsed.time;
+    updateRepeatSub();
+    showToast('Reveja os dados antes de guardar');
+  });
+
+  function todayISO(){
+    const d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function genCode(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let out = '';
+    for(let i=0;i<8;i++){ out += chars[Math.floor(Math.random()*chars.length)]; if(i===3) out+='-'; }
+    return out;
+  }
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+  function weekday(iso){ return new Date(iso+'T00:00:00').getDay(); }
+
+  // ---------- STORAGE ----------
+  // Guardado localmente no telemóvel (localStorage). Não é sincronizado
+  // automaticamente entre aparelhos — use o código de transferência em
+  // "Gerir família" para copiar os dados para outro telemóvel.
+  function loadLocal(){
+    try{
+      const raw = localStorage.getItem('ninho-family-data');
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return null;
+  }
+  async function saveFamily(){
+    try{
+      localStorage.setItem('ninho-family-data', JSON.stringify(family));
+    }catch(e){
+      showToast('Não foi possível guardar');
+    }
+  }
+
+  async function initFamily(){
+    let data = loadLocal();
+    if(!data){
+      data = {
+        members: [
+          {id: uid(), name:'Ana', color: PALETTE[1]},
+          {id: uid(), name:'Bruno', color: PALETTE[3]},
+        ],
+        tasks: [
+          {id: uid(), title:'Ficha de Ciências', assignee: null, category:'test', date: todayISO(), time:'', repeatWeekly:false, reminder:false, doneDates:[]},
+        ]
+      };
+      data.tasks[0].assignee = data.members[0].id;
+      family = data;
+      await saveFamily();
+    }else{
+      family = data;
+    }
+  }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 1800);
+  }
+
+  // ---------- HEADER ----------
+  function renderHeader(){
+    const names = family.members.map(m=>m.name);
+    let greet = 'Olá, família';
+    if(names.length === 1) greet = 'Olá, '+names[0];
+    document.getElementById('greeting').textContent = greet;
+    const dl = new Date(selectedDate+'T00:00:00');
+    const fmt = dl.toLocaleDateString('pt-PT', {weekday:'long', day:'numeric', month:'long'});
+    document.getElementById('dateLine').textContent = fmt.charAt(0).toUpperCase()+fmt.slice(1);
+  }
+
+  // ---------- DAY STRIP ----------
+  function renderDayStrip(){
+    const strip = document.getElementById('dayStrip');
+    strip.innerHTML = '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const start = new Date(today); start.setDate(start.getDate()-2);
+    for(let i=0;i<9;i++){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const iso = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const chip = document.createElement('div');
+      chip.className = 'day-chip'+(iso===todayISO()?' today':'')+(iso===selectedDate?' selected':'');
+      const dow = d.toLocaleDateString('pt-PT',{weekday:'short'}).replace('.','').toUpperCase();
+      chip.innerHTML = '<div class="dow">'+dow+'</div><div class="num">'+d.getDate()+'</div>';
+      chip.addEventListener('click', ()=>{ selectedDate = iso; renderAll(); });
+      strip.appendChild(chip);
+    }
+    setTimeout(()=>{
+      const sel = strip.querySelector('.selected');
+      if(sel) sel.scrollIntoView({inline:'center', block:'nearest'});
+    }, 0);
+  }
+
+  // ---------- FAMILY ROW ----------
+  function renderFamilyRow(){
+    const row = document.getElementById('familyRow');
+    row.innerHTML = '';
+    const allPill = document.createElement('div');
+    allPill.className = 'pill'+(activeFilter==='all'?' active':'');
+    allPill.textContent = 'Todos';
+    allPill.addEventListener('click', ()=>{ activeFilter='all'; renderAll(); });
+    row.appendChild(allPill);
+
+    family.members.forEach(m=>{
+      const p = document.createElement('div');
+      p.className = 'pill'+(activeFilter===m.id?' active':'');
+      p.innerHTML = '<span class="dot" style="background:'+m.color+'"></span>'+escapeHtml(m.name);
+      p.addEventListener('click', ()=>{ activeFilter = m.id; renderAll(); });
+      row.appendChild(p);
+    });
+
+    const addPill = document.createElement('div');
+    addPill.className = 'pill add-pill';
+    addPill.textContent = '+ Família';
+    addPill.addEventListener('click', openFamilySheet);
+    row.appendChild(addPill);
+  }
+
+  // ---------- OCCURRENCES ----------
+  function occursOn(task, iso){
+    if(task.repeatWeekly){
+      return iso >= task.date && weekday(iso) === weekday(task.date);
+    }
+    return task.date === iso;
+  }
+
+  // ---------- TASK LIST ----------
+  function renderTaskList(){
+    const list = document.getElementById('taskList');
+    const label = document.getElementById('listLabel');
+    list.innerHTML = '';
+    let tasks = family.tasks.filter(t=>occursOn(t, selectedDate));
+    if(activeFilter !== 'all') tasks = tasks.filter(t=>t.assignee === activeFilter);
+    tasks.sort((a,b)=>{
+      const aDone = a.doneDates.includes(selectedDate);
+      const bDone = b.doneDates.includes(selectedDate);
+      if(aDone !== bDone) return aDone ? 1 : -1;
+      return (a.time||'99:99').localeCompare(b.time||'99:99');
+    });
+
+    label.textContent = 'MURAL DE ROTINAS · '+tasks.length+(tasks.length===1?' item':' itens');
+
+    if(tasks.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>Nada marcado para este dia.<br>Toca em + para adicionar.</p>';
+      list.appendChild(empty);
+      return;
+    }
+
+    tasks.forEach(t=>{
+      const member = family.members.find(m=>m.id===t.assignee);
+      const cat = CATEGORIES.find(c=>c.id===t.category) || CATEGORIES[0];
+      const isDone = t.doneDates.includes(selectedDate);
+      const card = document.createElement('div');
+      card.className = 'task-card'+(isDone?' done':'');
+      card.style.setProperty('--tag-color', member ? member.color : '#999');
+
+      const metaParts = [];
+      if(t.time) metaParts.push(t.time);
+      metaParts.push(cat.label);
+      const metaStr = metaParts.join(' · ');
+
+      card.innerHTML =
+        '<div class="check'+(isDone?' checked':'')+'" data-id="'+t.id+'">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'+
+        '</div>'+
+        '<div class="task-body">'+
+          '<div class="task-top">'+
+            (member ? '<span class="assignee-tag" style="background:'+member.color+'">'+escapeHtml(member.name)+'</span>' : '')+
+            '<svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+ICONS[cat.icon]+'</svg>'+
+            (t.repeatWeekly ? '<svg class="repeat-badge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+ICONS.repeat+'</svg>' : '')+
+          '</div>'+
+          '<p class="task-title">'+escapeHtml(t.title)+'</p>'+
+          '<div class="task-meta">'+metaStr+'</div>'+
+        '</div>'+
+        '<div class="card-actions">'+
+          '<button class="bell-btn'+(t.reminder?' active':'')+'" data-id="'+t.id+'" title="Lembrete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS.bell+'</svg></button>'+
+          (gcalConnected ? '<button class="bell-btn gcal-add-btn" data-id="'+t.id+'" title="Adicionar ao Google Calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4"/></svg></button>' : '')+
+          '<button class="del-btn" data-id="'+t.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12z"/></svg></button>'+
+        '</div>';
+
+      list.appendChild(card);
+    });
+
+    list.querySelectorAll('.check').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        const id = el.dataset.id;
+        const t = family.tasks.find(x=>x.id===id);
+        const idx = t.doneDates.indexOf(selectedDate);
+        if(idx === -1) t.doneDates.push(selectedDate); else t.doneDates.splice(idx,1);
+        await saveFamily();
+        renderTaskList();
+      });
+    });
+    list.querySelectorAll('.del-btn').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        const id = el.dataset.id;
+        const t = family.tasks.find(x=>x.id===id);
+        const msg = t && t.repeatWeekly ? 'Apagar esta rotina e todas as repetições?' : 'Apagar esta rotina?';
+        if(!confirm(msg)) return;
+        family.tasks = family.tasks.filter(x=>x.id!==id);
+        await saveFamily();
+        renderAll();
+        scheduleAllReminders();
+        showToast('Rotina removida');
+      });
+    });
+    list.querySelectorAll('.gcal-add-btn').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        const id = el.dataset.id;
+        const t = family.tasks.find(x=>x.id===id);
+        await addTaskToGoogleCalendar(t, selectedDate);
+      });
+    });
+    list.querySelectorAll('.bell-btn:not(.gcal-add-btn)').forEach(el=>{
+      el.addEventListener('click', async ()=>{
+        const id = el.dataset.id;
+        const t = family.tasks.find(x=>x.id===id);
+        if(!t.time){ showToast('Defina uma hora para poder ativar o lembrete'); return; }
+        if(!t.reminder){
+          const ok = await ensureNotificationPermission();
+          if(!ok){ showToast('Permissão de notificações recusada'); return; }
+        }
+        t.reminder = !t.reminder;
+        await saveFamily();
+        renderTaskList();
+        scheduleAllReminders();
+        showToast(t.reminder ? 'Lembrete ativado' : 'Lembrete desativado');
+      });
+    });
+  }
+
+  function renderAll(){
+    renderHeader();
+    renderDayStrip();
+    renderFamilyRow();
+    renderTaskList();
+  }
+
+  // ---------- ADD TASK SHEET ----------
+  function openTaskSheet(){
+    if(family.members.length === 0){
+      showToast('Adicione primeiro um membro da família');
+      openFamilySheet();
+      return;
+    }
+    document.getElementById('taskTitle').value = '';
+    document.getElementById('taskDate').value = selectedDate;
+    document.getElementById('taskTime').value = '';
+    pendingAssignee = activeFilter !== 'all' ? activeFilter : family.members[0].id;
+    pendingCategory = CATEGORIES[0].id;
+    pendingRepeat = false;
+    pendingReminder = false;
+    renderAssigneeSelect();
+    renderCategorySelect();
+    updateRepeatSub();
+    document.getElementById('repeatToggle').classList.remove('on');
+    document.getElementById('reminderToggle').classList.remove('on');
+    document.getElementById('taskOverlay').classList.add('open');
+  }
+  function closeTaskSheet(){ document.getElementById('taskOverlay').classList.remove('open'); }
+
+  function updateRepeatSub(){
+    const dateVal = document.getElementById('taskDate').value || selectedDate;
+    const d = new Date(dateVal+'T00:00:00');
+    const dowName = d.toLocaleDateString('pt-PT', {weekday:'long'});
+    document.getElementById('repeatSub').textContent = 'Repete todas as ' + dowName + 's';
+  }
+
+  function renderAssigneeSelect(){
+    const wrap = document.getElementById('assigneeSelect');
+    wrap.innerHTML = '';
+    family.members.forEach(m=>{
+      const c = document.createElement('div');
+      c.className = 'chip-opt'+(pendingAssignee===m.id?' selected':'');
+      c.innerHTML = '<span class="dot" style="background:'+m.color+'"></span>'+escapeHtml(m.name);
+      c.addEventListener('click', ()=>{ pendingAssignee = m.id; renderAssigneeSelect(); });
+      wrap.appendChild(c);
+    });
+  }
+  function renderCategorySelect(){
+    const wrap = document.getElementById('categorySelect');
+    wrap.innerHTML = '';
+    CATEGORIES.forEach(c=>{
+      const el = document.createElement('div');
+      el.className = 'chip-opt'+(pendingCategory===c.id?' selected':'');
+      el.textContent = c.label;
+      el.addEventListener('click', ()=>{ pendingCategory = c.id; renderCategorySelect(); });
+      wrap.appendChild(el);
+    });
+  }
+
+  document.getElementById('openAddTask').addEventListener('click', openTaskSheet);
+  document.getElementById('cancelTaskBtn').addEventListener('click', closeTaskSheet);
+  document.getElementById('taskOverlay').addEventListener('click', (e)=>{ if(e.target.id==='taskOverlay') closeTaskSheet(); });
+  document.getElementById('taskDate').addEventListener('change', updateRepeatSub);
+
+  document.getElementById('repeatToggle').addEventListener('click', function(){
+    pendingRepeat = !pendingRepeat;
+    this.classList.toggle('on', pendingRepeat);
+  });
+  document.getElementById('reminderToggle').addEventListener('click', async function(){
+    if(!pendingReminder){
+      const ok = await ensureNotificationPermission();
+      if(!ok){ showToast('Permissão de notificações recusada'); return; }
+    }
+    pendingReminder = !pendingReminder;
+    this.classList.toggle('on', pendingReminder);
+  });
+
+  document.getElementById('saveTaskBtn').addEventListener('click', async ()=>{
+    const title = document.getElementById('taskTitle').value.trim();
+    const date = document.getElementById('taskDate').value;
+    const time = document.getElementById('taskTime').value;
+    if(!title){ showToast('Escreva o que é preciso fazer'); return; }
+    if(!date){ showToast('Escolha um dia'); return; }
+    if(pendingReminder && !time){ showToast('Defina uma hora para o lembrete'); return; }
+    family.tasks.push({
+      id: uid(), title, assignee: pendingAssignee, category: pendingCategory,
+      date, time, repeatWeekly: pendingRepeat, reminder: pendingReminder, doneDates: []
+    });
+    await saveFamily();
+    closeTaskSheet();
+    selectedDate = date;
+    renderAll();
+    scheduleAllReminders();
+    showToast('Rotina adicionada');
+  });
+
+  // ---------- FAMILY SHEET ----------
+  function openFamilySheet(){
+    document.getElementById('memberName').value = '';
+    document.getElementById('joinCodeInput').value = '';
+    pendingColor = PALETTE[0];
+    renderColorRow();
+    renderMembersManageList();
+    document.getElementById('familyOverlay').classList.add('open');
+  }
+  function closeFamilySheet(){ document.getElementById('familyOverlay').classList.remove('open'); }
+
+  function renderColorRow(){
+    const row = document.getElementById('colorRow');
+    row.innerHTML = '';
+    PALETTE.forEach(c=>{
+      const dot = document.createElement('div');
+      dot.className = 'color-dot'+(pendingColor===c?' selected':'');
+      dot.style.background = c;
+      dot.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      dot.addEventListener('click', ()=>{ pendingColor = c; renderColorRow(); });
+      row.appendChild(dot);
+    });
+  }
+
+  function renderMembersManageList(){
+    const wrap = document.getElementById('membersManageList');
+    wrap.innerHTML = '';
+    if(family.members.length === 0){
+      wrap.innerHTML = '<p style="color:var(--ink-soft); font-size:.85rem;">Ainda sem membros.</p>';
+      return;
+    }
+    family.members.forEach(m=>{
+      const row = document.createElement('div');
+      row.className = 'member-row';
+      row.innerHTML = '<span class="dot" style="background:'+m.color+'"></span><span>'+escapeHtml(m.name)+'</span><button data-id="'+m.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12z"/></svg></button>';
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = btn.dataset.id;
+        family.members = family.members.filter(m=>m.id!==id);
+        family.tasks = family.tasks.filter(t=>t.assignee!==id);
+        if(activeFilter === id) activeFilter = 'all';
+        await saveFamily();
+        renderMembersManageList();
+        renderAll();
+        scheduleAllReminders();
+      });
+    });
+  }
+
+  document.getElementById('closeFamilyBtn').addEventListener('click', closeFamilySheet);
+  document.getElementById('openFamilyBtn').addEventListener('click', openFamilySheet);
+  document.getElementById('familyOverlay').addEventListener('click', (e)=>{ if(e.target.id==='familyOverlay') closeFamilySheet(); });
+
+  document.getElementById('saveMemberBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('memberName').value.trim();
+    if(!name){ showToast('Escreva um nome'); return; }
+    family.members.push({ id: uid(), name, color: pendingColor });
+    await saveFamily();
+    document.getElementById('memberName').value = '';
+    renderMembersManageList();
+    renderFamilyRow();
+    showToast('Membro adicionado');
+  });
+
+  document.getElementById('genCodeBtn').addEventListener('click', async ()=>{
+    try{
+      const code = btoa(unescape(encodeURIComponent(JSON.stringify(family))));
+      await navigator.clipboard.writeText(code);
+      showToast('Código copiado — envie-o agora');
+    }catch(e){
+      showToast('Não foi possível copiar automaticamente');
+    }
+  });
+
+  document.getElementById('joinFamilyBtn').addEventListener('click', async ()=>{
+    const code = document.getElementById('joinCodeInput').value.trim();
+    if(!code){ showToast('Cole um código'); return; }
+    if(!confirm('Isto substitui os dados atuais deste telemóvel pelos do código. Continuar?')) return;
+    try{
+      const data = JSON.parse(decodeURIComponent(escape(atob(code))));
+      if(!data.members || !data.tasks) throw new Error('formato inválido');
+      family = data;
+      await saveFamily();
+      activeFilter = 'all';
+      closeFamilySheet();
+      renderAll();
+      scheduleAllReminders();
+      showToast('Dados importados');
+    }catch(e){
+      showToast('Código inválido');
+    }
+  });
+
+  // ---------- REMINDERS ----------
+  async function ensureNotificationPermission(){
+    if(!('Notification' in window)) return false;
+    if(Notification.permission === 'granted') return true;
+    if(Notification.permission === 'denied') return false;
+    try{
+      const perm = await Notification.requestPermission();
+      return perm === 'granted';
+    }catch(e){ return false; }
+  }
+
+  function nextOccurrenceDate(task){
+    const now = new Date();
+    if(!task.repeatWeekly){
+      const dt = new Date(task.date+'T'+(task.time||'00:00')+':00');
+      return dt > now ? dt : null;
+    }
+    // find next date on/after today matching weekday, at time
+    let d = new Date();
+    d.setHours(0,0,0,0);
+    const targetDow = weekday(task.date);
+    for(let i=0;i<8;i++){
+      if(d.getDay() === targetDow){
+        const [h,m] = (task.time||'00:00').split(':').map(Number);
+        const candidate = new Date(d);
+        candidate.setHours(h,m,0,0);
+        if(candidate > now) return candidate;
+      }
+      d.setDate(d.getDate()+1);
+    }
+    return null;
+  }
+
+  function scheduleAllReminders(){
+    scheduledTimers.forEach(id=>clearTimeout(id));
+    scheduledTimers = [];
+    if(!('Notification' in window) || Notification.permission !== 'granted') return;
+    family.tasks.filter(t=>t.reminder && t.time).forEach(t=>{
+      const when = nextOccurrenceDate(t);
+      if(!when) return;
+      const ms = when.getTime() - Date.now();
+      if(ms > 0 && ms < 2147000000){
+        const member = family.members.find(m=>m.id===t.assignee);
+        const timerId = setTimeout(()=>{
+          try{
+            new Notification('Ninho — '+t.title, {
+              body: (member ? member.name+' · ' : '')+'É agora, '+t.time,
+            });
+          }catch(e){}
+          scheduleAllReminders();
+        }, ms);
+        scheduledTimers.push(timerId);
+      }
+    });
+  }
+
+  // ---------- INIT ----------
+  (async function init(){
+    await initFamily();
+    renderAll();
+    scheduleAllReminders();
+  })();
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+    });
+  }
+})();
+</script>
+</body>
+</html>
